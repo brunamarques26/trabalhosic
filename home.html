@@ -6,12 +6,16 @@
 </head>
 <body>
 
-    <form>
-        <input type="text" name="tarefa" />
-        <input type="submit" />
-    </form>
+    <div class="container">
+        <h2>To-Do List</h2>
 
-    <div class="list"></div>
+        <form id="todo-form">
+            <input type="text" name="tarefa" />
+            <input type="submit" />
+        </form>
+
+        <div class="list" id="todo-list"></div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js" type="module"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js" type="module"></script>
@@ -20,3 +24,4 @@
     <script src="script2.js" type="module"></script>
 </body>
 </html>
+

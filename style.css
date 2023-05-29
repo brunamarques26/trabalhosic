@@ -63,12 +63,43 @@ input[type="submit"] {
     margin-top: 20px;
     font-size: 18px;
     line-height: 1.5;
+    list-style-type: none;
+    padding: 0;
 }
 
 .list-item {
     margin-bottom: 10px;
+    display: flex;
+    align-items: center;
 }
 
-.list-item:last-child {
-    margin-bottom: 0;
+.list-item input[type="checkbox"] {
+    margin-right: 10px;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #dcdcdc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.list-item input[type="checkbox"]:checked {
+    background-color: #a78b5f;
+    border-color: #a78b5f;
+}
+
+.list-item label {
+    flex-grow: 1;
+    cursor: pointer;
+    text-align: left;
+}
+
+.list-item.completed label {
+    text-decoration: line-through;
+    color: #999999;
+}
+
+.list-item input[type="checkbox"]:checked + label {
+    text-decoration: line-through;
+    color: #cccccc;
 }
