@@ -27,59 +27,67 @@ const db = getFirestore(app);
 
 const form = document.querySelector('form');
 
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    let tarefa = document.querySelector('[name=tarefa]').value;
-    try {
-        const user = auth.currentUser;
-        const userId = user.uid;
-
-        const docRef = await addDoc(collection(db, "users"), {
-            tarefa: tarefa,
-            userId: userId
-        });
-        console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-        console.error("Error adding document: ", e);
-    }
-    alert('Registado com sucesso');
-    form.reset();
-});
+// Definir um conjunto para armazenar os IDs dos documentos exibidos
+const displayedTasks = new Set();
 
 auth.onAuthStateChanged((user) => {
-    if (user) {
-        alert("Login com sucesso: " + user.displayName);
-        console.log(user);
+  if (user) {
+    alert("Login com sucesso: " + user.displayName);
+    console.log(user);
 
-        const userId = user.uid;
-        const userTasksRef = collection(db, "users");
-        const tasksQuery = query(userTasksRef, where("userId", "==", userId));
+    const userId = user.uid;
+    const userTasksRef = collection(db, "users");
+    const tasksQuery = query(userTasksRef, where("userId", "==", userId));
 
-        const unsubscribe = onSnapshot(tasksQuery, (snapshot) => {
-            snapshot.forEach((doc) => {
-                const taskId = doc.id;
-                const taskData = doc.data();
-        
-                const listItem = document.createElement('li');
-                listItem.classList.add('list-item');
-        
-                const checkbox = document.createElement('input');
-                checkbox.setAttribute('type', 'checkbox');
-                checkbox.setAttribute('id', taskId);
-                checkbox.checked = taskData.completed;
-        
-                const label = document.createElement('label');
-                label.setAttribute('for', taskId);
-                label.innerText = taskData.tarefa;
-        
-                listItem.appendChild(checkbox);
-                listItem.appendChild(label);
-        
-                list.appendChild(listItem);
-            });
-        });
-        
-    }
+    const unsubscribe = onSnapshot(tasksQuery, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        const taskId = change.doc.id;
+        const taskData = change.doc.data();
+
+        if (change.type === "added" && !displayedTasks.has(taskId)) {
+          const listItem = document.createElement('li');
+          listItem.classList.add('list-item');
+
+          const checkbox = document.createElement('input');
+          checkbox.setAttribute('type', 'checkbox');
+          checkbox.setAttribute('id', taskId);
+          checkbox.checked = taskData.completed;
+
+          const label = document.createElement('label');
+          label.setAttribute('for', taskId);
+          label.innerText = taskData.tarefa;
+
+          listItem.appendChild(checkbox);
+          listItem.appendChild(label);
+
+          list.appendChild(listItem);
+
+          // Adicionar o ID do documento ao conjunto de documentos exibidos
+          displayedTasks.add(taskId);
+        }
+      });
+    });
+  }
 });
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  let tarefa = document.querySelector('[name=tarefa]').value;
+  try {
+    const user = auth.currentUser;
+    const userId = user.uid;
+
+    const docRef = await addDoc(collection(db, "users"), {
+      tarefa: tarefa,
+      userId: userId
+    });
+    console.log("Document written with ID: ", docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+  alert('Registado com sucesso');
+  form.reset();
+});
+
 
 const list = document.querySelector('.list');

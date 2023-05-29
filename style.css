@@ -46,6 +46,7 @@ input[type="text"] {
     margin-bottom: 10px;
     border: 1px solid #dcdcdc;
     border-radius: 4px;
+    box-sizing: border-box; /* Adicionado */
 }
 
 input[type="submit"] {
