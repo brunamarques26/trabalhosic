@@ -7,16 +7,28 @@
 </head>
 <body>
 
-    <div class="container">
+    <div class="container todo-container">
         <h2>To-Do List</h2>
 
         <form id="todo-form">
-            <input type="text" name="tarefa" />
+            <input type="text" name="tarefa" class="todo-input"/>
             <input type="submit" class="submit-btn" />
         </form>
 
         <div class="list" id="todo-list"></div>
     </div>
+
+    <div class="container notes-container">
+        <h2>Notas</h2>
+    
+        <form id="notes-form">
+            <textarea name="tarefa-notes" class="notes-input"></textarea>
+            <input type="submit" class="submit-btn" />
+        </form>
+    
+        <div class="list" id="notes-list"></div>
+    </div>
+    
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js" type="module"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js" type="module"></script>
@@ -25,4 +37,3 @@
     <script src="script2.js" type="module"></script>
 </body>
 </html>
-
