@@ -1,8 +1,36 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, where, updateDoc,  doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs,addDoc,setDoc, onSnapshot, query, where, updateDoc,  doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+//Codigo para que a textarea se ajuste verticalmente consuante o conteudo 
+const textarea = document.querySelector('.notes-input');
+textarea.addEventListener('input', () => {
+  textarea.style.height = 'auto'; // Reset the height to auto
+  textarea.style.height = `${textarea.scrollHeight}px`; // Set the height to the scrollHeight
+});
+
+//Calendario
+document.addEventListener('DOMContentLoaded', function() {
+  var calendarEl = document.getElementById('calendar');
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    selectable: true,
+    select: function(info) {
+      // Handle the selection of a date or range
+      var startDate = info.start;
+      var endDate = info.end;
+
+      // Perform any desired actions with the selected date(s)
+      // For example, send a notification or mark the selected days in some way
+      // You can use external libraries or custom code to handle notifications
+
+      // Example: Log the selected date(s) to the console
+      console.log('Selected date(s):', startDate, endDate);
+    }
+  });
+  calendar.render();
+});
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -25,14 +53,17 @@ const provider = new GoogleAuthProvider();
 
 const db = getFirestore(app);
 
-const form = document.querySelector('form');
+//Form da Bruna
+const form = document.querySelector('#todo-form');
+
+//Form em condições
+const formnotas = document.querySelector('#notes-form');
 
 const list = document.querySelector('.list');
 
 // Definir um conjunto para armazenar os IDs dos documentos exibidos
 const displayedTasks = new Set();
 
-// Função para exibir as tarefas
 // Função para exibir as tarefas
 function displayTasks() {
     const user = auth.currentUser;
@@ -142,10 +173,12 @@ form.addEventListener('submit', async (e) => {
   try {
     const user = auth.currentUser;
     const userId = user.uid;
+    const name = user.displayName
 
     const docRef = await addDoc(collection(db, "users"), {
       tarefa: tarefa,
-      userId: userId
+      userId: userId,
+      userName: name
     });
     console.log("Document written with ID: ", docRef.id);
 
@@ -157,4 +190,49 @@ form.addEventListener('submit', async (e) => {
   }
   alert('Registado com sucesso');
   form.reset();
+});
+
+// Chamar a função displayTasks no evento input do textarea notas
+const notasTextarea = document.querySelector('[name=tarefa-notes]');
+notasTextarea.addEventListener('input', async (e) => {
+  const user = auth.currentUser;
+  const userId = user.uid;
+
+  if (userId) {
+    const notesQuery = query(collection(db, "notes"), where("userId", "==", userId));
+    const notesSnapshot = await getDocs(notesQuery);
+
+    if (notesSnapshot.empty) {
+      let tarefa_notas = e.target.value;
+      if (tarefa_notas !== "") {
+        try {
+          const name = user.displayName;
+
+          const docRef = await addDoc(collection(db, "notes"), {
+            texto: tarefa_notas,
+            userId: userId,
+            userName: name
+          });
+          console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+      }
+    } else {
+      const notesDoc = notesSnapshot.docs[0];
+      const tarefa_notas = e.target.value;
+      try {
+        const name = user.displayName;
+
+        await setDoc(notesDoc.ref, {
+          texto: tarefa_notas,
+          userId: userId,
+          userName: name
+        }, { merge: true });
+        console.log("Document updated with ID: ", notesDoc.id);
+      } catch (e) {
+        console.error("Error updating document: ", e);
+      }
+    }
+  }
 });
