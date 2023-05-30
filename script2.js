@@ -11,6 +11,27 @@ textarea.addEventListener('input', () => {
   textarea.style.height = `${textarea.scrollHeight}px`; // Set the height to the scrollHeight
 });
 
+//Calendario
+document.addEventListener('DOMContentLoaded', function() {
+  var calendarEl = document.getElementById('calendar');
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    selectable: true,
+    select: function(info) {
+      // Handle the selection of a date or range
+      var startDate = info.start;
+      var endDate = info.end;
+
+      // Perform any desired actions with the selected date(s)
+      // For example, send a notification or mark the selected days in some way
+      // You can use external libraries or custom code to handle notifications
+
+      // Example: Log the selected date(s) to the console
+      console.log('Selected date(s):', startDate, endDate);
+    }
+  });
+  calendar.render();
+});
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyC1J6AjxQTH6-VMYbb_8xKXFsIJjLZKrkI",
