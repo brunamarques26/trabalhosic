@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, where, updateDoc,  doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs,addDoc,setDoc, onSnapshot, query, where, updateDoc,  doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
 //Codigo para que a textarea se ajuste verticalmente consuante o conteudo 
@@ -174,26 +174,44 @@ form.addEventListener('submit', async (e) => {
 // Chamar a função displayTasks no evento input do textarea notas
 const notasTextarea = document.querySelector('[name=tarefa-notes]');
 notasTextarea.addEventListener('input', async (e) => {
+  const user = auth.currentUser;
+  const userId = user.uid;
 
-const notesRef = collection(db, "notes");
+  if (userId) {
+    const notesQuery = query(collection(db, "notes"), where("userId", "==", userId));
+    const notesSnapshot = await getDocs(notesQuery);
 
+    if (notesSnapshot.empty) {
+      let tarefa_notas = e.target.value;
+      if (tarefa_notas !== "") {
+        try {
+          const name = user.displayName;
 
-  let tarefa_notas = e.target.value;
-    if (tarefa_notas !== "") {
+          const docRef = await addDoc(collection(db, "notes"), {
+            texto: tarefa_notas,
+            userId: userId,
+            userName: name
+          });
+          console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+      }
+    } else {
+      const notesDoc = notesSnapshot.docs[0];
+      const tarefa_notas = e.target.value;
       try {
-        const user = auth.currentUser;
-        const userId = user.uid;
         const name = user.displayName;
 
-        const docRef = await addDoc(collection(db, "notes"), {
+        await setDoc(notesDoc.ref, {
           texto: tarefa_notas,
           userId: userId,
           userName: name
-        });
-        console.log("Document written with ID: ", docRef.id);
+        }, { merge: true });
+        console.log("Document updated with ID: ", notesDoc.id);
       } catch (e) {
-        console.error("Error adding document: ", e);
+        console.error("Error updating document: ", e);
       }
     }
-    
+  }
 });
