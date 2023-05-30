@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
 import { getFirestore, collection, getDocs,addDoc,setDoc, onSnapshot, query, where, updateDoc,  doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
 //Codigo para que a textarea se ajuste verticalmente consoante o conteudo 
 const textarea = document.querySelector('.notes-input');
@@ -284,6 +284,20 @@ formnotas.addEventListener('submit', async (e) => {
   alert('Registado com sucesso');
   formnotas.reset();
 });
+
+//Sign-Out
+
+let signOutBtn = document.getElementById('signOut');
+
+signOutBtn.addEventListener('click', async (e) => {;
+    signOut(auth).then(() => {
+      window.location.href = "index.html";
+    }).catch((error) => {
+      alert("Aconteceu um erro")
+    });
+
+});
+
 
 
 
