@@ -174,25 +174,26 @@ form.addEventListener('submit', async (e) => {
 // Chamar a função displayTasks no evento input do textarea notas
 const notasTextarea = document.querySelector('[name=tarefa-notes]');
 notasTextarea.addEventListener('input', async (e) => {
+
+const notesRef = collection(db, "notes");
+
+
   let tarefa_notas = e.target.value;
-  if (tarefa_notas !== "") {
-    try {
-      const user = auth.currentUser;
-      const userId = user.uid;
-      const name = user.displayName;
+    if (tarefa_notas !== "") {
+      try {
+        const user = auth.currentUser;
+        const userId = user.uid;
+        const name = user.displayName;
 
-      const docRef = await addDoc(collection(db, "users"), {
-        texto: tarefa_notas,
-        userId: userId,
-        userName: name
-      });
-      console.log("Document written with ID: ", docRef.id);
-
-      // Limpar o conjunto de IDs exibidos para evitar duplicação após adicionar uma nova tarefa
-      displayedTasks.clear();
-      displayTasks();
-    } catch (e) {
-      console.error("Error adding document: ", e);
+        const docRef = await addDoc(collection(db, "notes"), {
+          texto: tarefa_notas,
+          userId: userId,
+          userName: name
+        });
+        console.log("Document written with ID: ", docRef.id);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
     }
-  }
+    
 });
