@@ -438,7 +438,7 @@ auth.onAuthStateChanged((user) => {
     displayCalen();
 
     const photoURL = user.photoURL;
-/*
+
     if (photoURL) {
       console.log("URL da foto de perfil:", photoURL);
   
@@ -446,7 +446,8 @@ auth.onAuthStateChanged((user) => {
       const profilePhoto = document.getElementById("profile-photo");
       profilePhoto.src = photoURL;
       profilePhoto.alt = "Foto de Perfil";
-    } */
+      profilePhoto.style.width = "30px";
+    }
   }
 });
 

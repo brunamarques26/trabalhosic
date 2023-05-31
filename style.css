@@ -9,7 +9,6 @@ body {
     margin-top: 5%;
 }
 
-
 .calendar {
     width: 300px;
     background-color: #ffffff;
@@ -20,47 +19,47 @@ body {
     margin-left: 20px;
     margin-top: 20px;
     margin-right: 20px;
-  }
-  
-  .header {
+}
+
+.header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
-  }
-  
-  .weekdays {
+}
+
+.weekdays {
     display: flex;
-  }
-  
-  .weekdays div {
+}
+
+.weekdays div {
     flex: 1;
     text-align: center;
-  }
-  
-  .days {
+}
+
+.days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 5px;
-  }
-  
-  .days div {
+}
+
+.days div {
     text-align: center;
     padding: 5px;
     border: 1px solid #ccc;
     cursor: pointer;
-  }
-  
-  .days div:hover {
+}
+
+.days div:hover {
     background-color: #f2f2f2;
-  }
-  
-  .days .selected {
+}
+
+.days .selected {
     background-color: #ccc;
     font-weight: bold;
-  }
+}
 
-  .list-data li {
+.list-data li {
     position: relative;
     border: 1px solid #dcdcdc;
     border-radius: 4px;
@@ -70,19 +69,14 @@ body {
     text-align: left;
 }
 
-.list-data li label {
-    padding-left: 30px;
-}
-
-
-
-.todo-container, .container {
+.todo-container,
+.container {
     background-color: #ffffff;
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
     text-align: center;
-    margin-top: 20px; 
+    margin-top: 20px;
     margin-right: 20px;
     margin-left: 20px;
 }
@@ -106,10 +100,10 @@ body {
     border: 1px solid #dcdcdc;
     border-radius: 4px;
     box-sizing: border-box;
-    resize: none; 
-    overflow: hidden; 
+    resize: none;
+    overflow: hidden;
     font-family: Hind, sans-serif;
-  }
+}
 
 h2 {
     color: #333333;
@@ -136,7 +130,8 @@ h2 {
 form {
     margin-top: 20px;
 }
-.todo-input{
+
+.todo-input {
     font-size: 15px;
     width: 100%;
     padding: 12px;
@@ -145,7 +140,6 @@ form {
     box-sizing: border-box;
     font-family: Hind, sans-serif;
 }
-
 
 input[type="submit"] {
     background-color: #f3722c;
@@ -157,7 +151,6 @@ input[type="submit"] {
     font-size: 16px;
     border-radius: 4px;
 }
-
 
 .list {
     margin-top: 20px;
@@ -204,24 +197,26 @@ input[type="submit"] {
     color: #cccccc;
 }
 
-.delete-button, .delete-button-task {
+.delete-button,
+.delete-button-task {
     border: none;
     background: none;
     padding: 0;
     cursor: pointer;
     font-size: 24px;
     color: #888888;
-  }
-  
-  .delete-button-task:hover, .delete-button:hover {
+}
+
+.delete-button-task:hover,
+.delete-button:hover {
     color: #d11212;
-  }
-  
-  .delete-button:focus {
+}
+
+.delete-button:focus {
     outline: none;
-  }
-  
-  .list-notes li {
+}
+
+.list-notes li {
     position: relative;
     border: 1px solid #eee;
     background-color: #fff8d2;
@@ -236,10 +231,10 @@ input[type="submit"] {
     padding-left: 30px;
 }
 
-.delete-button{
+.delete-button {
     position: absolute;
     top: 5px;
-    left: 5px; 
+    left: 5px;
     border: none;
     background: none;
     padding: 0;
@@ -248,7 +243,7 @@ input[type="submit"] {
     color: #888888;
 }
 
-.delete-button-task{
+.delete-button-task {
     border: none;
     background: none;
     padding: 0;
@@ -258,41 +253,46 @@ input[type="submit"] {
 }
 
 header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: #f3722c;
-  padding: 10px;
-  color: white;
-  z-index: 9999; /* Para garantir que a header fique acima do conteúdo */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f3722c;
+    padding: 10px;
+    color: white;
+    z-index: 9999; /* Para garantir que a header fique acima do conteúdo */
 }
 
 #header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    align-items: center;
+}
+
+#profile-photo {
+    margin-right: 10px;
 }
 
 #username {
-  margin: 0;
+    margin: 0;
+    margin-right: 10px;
 }
 
 #signOut {
-  background-color: #f3722c;
-  border: none;
-  border-radius: 4px;
-  color: #ffffff;
-  cursor: pointer;
-  font-size: 16px;
-  color: white;
-  padding: 8px 16px;
-  transition: background-color 0.3s ease;
-  margin-right: 20px;
+    background-color: #f3722c;
+    border: none;
+    border-radius: 4px;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 8px 16px;
+    transition: background-color 0.3s ease;
+    right: 10px;
+    position: absolute;
+    margin-right: 15px;
 }
 
 #signOut:hover {
-  background-color: #d76527;
+    background-color: #d76527;
 }
 
 button {
@@ -302,21 +302,18 @@ button {
     color: #f3722c;
     cursor: pointer;
     font-size: 16px;
-  }
-  
-  /* Estilo específico para o botão "prev" */
-  button.prev {
-    margin-right: 10px;
-  }
-  
-  /* Estilo específico para o botão "next" */
-  button.next {
-    margin-left: 10px;
-  }
+}
 
-  .profile-photo {
-    border-radius: 50%;
-  }
+/* Estilo específico para o botão "prev" */
+button.prev {
+    margin-right: 10px;
+}
+
+/* Estilo específico para o botão "next" */
+button.next {
+    margin-left: 10px;
+}
+
 
 @media (max-width: 500px) {
     .container {
@@ -325,5 +322,3 @@ button {
         padding: 10px;
     }
 }
-
-
