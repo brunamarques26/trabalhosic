@@ -5,7 +5,15 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
+<header>
+    <div id="header">
+        <!--<img src="" alt="Foto de Perfil" id="profile-photo">-->
+        <h4 id="username"></h4>
+        <button id="signOut">Sign Out</button>
+    </div>
+</header>
 <body>
+
 
     <div class="calendar">
         <div class="header">
@@ -23,8 +31,11 @@
           <div>Sat</div>
         </div>
         <div class="days"></div>
+        <br>
+        <h2>Datas Importantes</h2>
         <div class="list-data" id="data-list"></div>
       </div>
+      
       
 
 
@@ -49,8 +60,6 @@
     
         <div class="list-notes" id="notes-list"></div>
     </div>
-
-    <button id="signOut">Sign Out</button>
     
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js" type="module"></script>

@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
   
       } else {
         // If the date doesn't exist, prompt the user to enter a text
-        const text = prompt("Enter text for the selected date:");
+        const text = prompt("Insira o texto para a data selecionada:");
   
         if (text) {
           // If the user entered a text, save the date and text to the database
@@ -424,15 +424,29 @@ function displayTasks() {
         console.error("Erro ao excluir a nota: ", error);
       });
   }
+
+  let username = document.getElementById("username")
   
 //quando é feita a autenticação
 auth.onAuthStateChanged((user) => {
   if (user) {
     //alert("Login com sucesso: " + user.displayName);
+    username.innerHTML = user.displayName
     console.log(user);
     displayTasks();
     displayNotes();
     displayCalen();
+
+    const photoURL = user.photoURL;
+/*
+    if (photoURL) {
+      console.log("URL da foto de perfil:", photoURL);
+  
+      // Use a URL da foto de perfil para definir o atributo 'src' da imagem
+      const profilePhoto = document.getElementById("profile-photo");
+      profilePhoto.src = photoURL;
+      profilePhoto.alt = "Foto de Perfil";
+    } */
   }
 });
 
