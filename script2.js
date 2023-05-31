@@ -274,7 +274,7 @@ function displayTasks() {
       .catch((error) => {
         console.error("Erro ao excluir o documento: ", error);
       });
-  }
+  }  
   
   
 
@@ -419,51 +419,3 @@ signOutBtn.addEventListener('click', async (e) => {;
 
 });
 
-
-
-
-// Chamar a função displayTasks no evento submit do botão notas
-/*
-formnotas.addEventListener('submit', async (e) => {
-  const user = auth.currentUser;
-  const userId = user.uid;
-
-  if (userId) {
-    const notesQuery = query(collection(db, "notes"), where("userId", "==", userId));
-    const notesSnapshot = await getDocs(notesQuery);
-
-    if (notesSnapshot.empty) {
-      let tarefa_notas = e.target.value;
-      if (tarefa_notas !== "") {
-        try {
-          const name = user.displayName;
-
-          const docRef = await addDoc(collection(db, "notes"), {
-            texto: tarefa_notas,
-            userId: userId,
-            userName: name
-          });
-          console.log("Document written with ID: ", docRef.id);
-        } catch (e) {
-          console.error("Error adding document: ", e);
-        }
-      }
-    } else {
-      const notesDoc = notesSnapshot.docs[0];
-      const tarefa_notas = e.target.value;
-      try {
-        const name = user.displayName;
-
-        await setDoc(notesDoc.ref, {
-          texto: tarefa_notas,
-          userId: userId,
-          userName: name
-        }, { merge: true });
-        console.log("Document updated with ID: ", notesDoc.id);
-      } catch (e) {
-        console.error("Error updating document: ", e);
-      }
-    }
-  }
-});
-*/
