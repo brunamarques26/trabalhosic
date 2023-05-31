@@ -8,6 +8,7 @@ body {
     padding: 0;
 }
 
+
 .calendar {
     width: 300px;
     background-color: #ffffff;
@@ -64,7 +65,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
     text-align: center;
-    margin-top: 20px; /* Add margin-top to center the container vertically */
+    margin-top: 20px; 
     margin-right: 20px;
     margin-left: 20px;
 }
@@ -75,9 +76,11 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
     text-align: center;
-    margin-top: 20px; /* Add margin-top to center the container vertically */
+    margin-top: 20px; 
+    margin-left: 20px;
     margin-right: 20px;
     flex-grow: 1;
+    max-width: 40%;
 }
 
 .notes-input {
@@ -87,8 +90,8 @@ body {
     border: 1px solid #dcdcdc;
     border-radius: 4px;
     box-sizing: border-box;
-    resize: none; /* Disable manual resizing */
-    overflow: hidden; /* Hide scrollbars */
+    resize: none; 
+    overflow: hidden; 
   }
 
 h2 {
@@ -121,7 +124,7 @@ form {
     margin-bottom: 10px;
     border: 1px solid #dcdcdc;
     border-radius: 4px;
-    box-sizing: border-box; /* Adicionado */
+    box-sizing: border-box;
 }
 
 
@@ -199,7 +202,41 @@ input[type="submit"] {
     outline: none;
   }
   
-  
+  .list-notes li {
+    position: relative;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    text-align: left;
+}
+
+.list-notes li label {
+    padding-left: 30px;
+}
+
+.delete-button{
+    position: absolute;
+    top: 5px;
+    left: 5px; 
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 24px;
+    color: #888888;
+}
+
+.delete-button-task{
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 24px;
+    color: #888888;
+}
+
 
 @media (max-width: 500px) {
     .container {

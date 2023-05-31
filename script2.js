@@ -2,13 +2,13 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
 import { getFirestore, collection, getDocs,addDoc,setDoc, onSnapshot, query, where, updateDoc,  doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
-//Codigo para que a textarea se ajuste verticalmente consuante o conteudo 
+//Codigo para que a textarea se ajuste verticalmente consoante o conteudo 
 const textarea = document.querySelector('.notes-input');
 textarea.addEventListener('input', () => {
-  textarea.style.height = 'auto'; // Reset the height to auto
-  textarea.style.height = `${textarea.scrollHeight}px`; // Set the height to the scrollHeight
+  textarea.style.height = 'auto'; 
+  textarea.style.height = `${textarea.scrollHeight}px`;
 });
 
 //----------------------------------------------Calendario----------------------------------------------
@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 //-------------------------------------------------------------------------------------
 
-// Your web app's Firebase configuration
+//Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyC1J6AjxQTH6-VMYbb_8xKXFsIJjLZKrkI",
     authDomain: "trabalhosic2023.firebaseapp.com",
@@ -172,25 +172,28 @@ const provider = new GoogleAuthProvider();
 
 const db = getFirestore(app);
 
-//Form da Bruna
+//Form do To-Do
 const form = document.querySelector('#todo-form');
 
-//Form em condições
+//Form das Notas
 const formnotas = document.querySelector('#notes-form');
 
+//Lista do To-Do
 const list = document.querySelector('.list');
 
-// Definir um conjunto para armazenar os IDs dos documentos exibidos
+//Lista das notas
+const listNotes = document.querySelector('.list-notes');
+
+// Armazena os IDs do que já apareceu no ecrã
 const displayedTasks = new Set();
 
-// Função para exibir as tarefas
+// Função para mostrar as tarefas numa lista com checkbox
 function displayTasks() {
     const user = auth.currentUser;
     const userId = user.uid;
     const userTasksRef = collection(db, "users");
     const tasksQuery = query(userTasksRef, where("userId", "==", userId));
   
-    // Limpar a lista antes de exibir as tarefas novamente
     list.innerHTML = "";
   
     onSnapshot(tasksQuery, (snapshot) => {
@@ -207,14 +210,14 @@ function displayTasks() {
           checkbox.setAttribute('id', taskId);
           checkbox.checked = taskData.completed;
   
-          // Adicionar o ouvinte de eventos ao evento 'change' da checkbox
+          //Verifica se a checkbox foi escolhida
           checkbox.addEventListener('change', (event) => {
             const checked = event.target.checked;
             const taskId = event.target.id;
   
             const taskRef = doc(db, "users", taskId);
   
-            // Atualizar o campo "completed" no Firestore com o novo valor da checkbox
+            //Se sim atualiza o "completed" na firebase com checked
             updateDoc(taskRef, {
               completed: checked
             })
@@ -234,14 +237,14 @@ function displayTasks() {
           const deleteIcon = document.createElement('span');
           deleteIcon.classList.add('material-icons');
           deleteIcon.textContent = 'delete_forever';
-          deleteButton.classList.add('delete-button');
+          deleteButton.classList.add('delete-button-task');
           deleteButton.appendChild(deleteIcon);
           deleteButton.addEventListener('click', () => {
             deleteItem(taskId);
           });
           
 
-          listItem.setAttribute('data-task-id', taskId); // Adicionar o atributo data-task-id
+          listItem.setAttribute('data-task-id', taskId);
   
           listItem.appendChild(checkbox);
           listItem.appendChild(label);
@@ -249,21 +252,20 @@ function displayTasks() {
   
           list.appendChild(listItem);
   
-          // Adicionar o ID do documento ao conjunto de IDs exibidos
           displayedTasks.add(taskId);
         }
       });
     });
   }
   
-  // Função para excluir uma tarefa
+  //Função para apagar uma tarefa
   function deleteItem(taskId) {
     const taskRef = doc(db, "users", taskId);
     deleteDoc(taskRef)
       .then(() => {
         console.log("Documento excluído com sucesso!");
   
-        // Encontrar o elemento correspondente pelo atributo data-task-id e removê-lo da lista
+        //Encontra o elemento pelo atributo data-task-id e removev da lista
         const listItem = document.querySelector(`li[data-task-id="${taskId}"]`);
         if (listItem) {
           listItem.remove();
@@ -274,18 +276,84 @@ function displayTasks() {
       });
   }
   
+  
 
+  const displayedNotes = new Set();
 
-// Chamar a função displayTasks no evento onAuthStateChanged
+  function displayNotes() {
+    const user = auth.currentUser;
+    const userId = user.uid;
+    const userNoteRef = collection(db, "notes");
+    const notesQuery = query(userNoteRef, where("userId", "==", userId));
+  
+    listNotes.innerHTML = "";
+    listNotes.style.listStyleType = "none"; 
+  
+    onSnapshot(notesQuery, (snapshot) => {
+      snapshot.forEach((doc2) => {
+        const noteId = doc2.id;
+        const noteData = doc2.data();
+  
+        if (!displayedNotes.has(noteId)) {
+          const listItem = document.createElement('li');
+          listItem.classList.add('list-notes');
+  
+          const label = document.createElement('label');
+          label.setAttribute('for', noteId);
+          label.innerText = noteData.texto;
+  
+          const deleteButton = document.createElement('button');
+          const deleteIcon = document.createElement('span');
+          deleteIcon.classList.add('material-icons');
+          deleteIcon.textContent = 'delete_forever';
+          deleteButton.classList.add('delete-button');
+          deleteButton.appendChild(deleteIcon);
+          deleteButton.addEventListener('click', () => {
+            deleteNoteItem(noteId); 
+          });
+  
+          listItem.setAttribute('data-note-id', noteId);
+  
+          listItem.appendChild(label);
+          listItem.appendChild(deleteButton);
+  
+          listNotes.appendChild(listItem);
+  
+
+          displayedNotes.add(noteId);
+        }
+      });
+    });
+  }
+  
+
+  function deleteNoteItem(noteId) { 
+    const noteRef = doc(db, "notes", noteId);
+    deleteDoc(noteRef)
+      .then(() => {
+        console.log("Nota excluída com sucesso!");
+  
+        const listItem = document.querySelector(`li[data-note-id="${noteId}"]`);
+        if (listItem) {
+          listItem.remove();
+        }
+      })
+      .catch((error) => {
+        console.error("Erro ao excluir a nota: ", error);
+      });
+  }
+  
+//quando é feita a autenticação
 auth.onAuthStateChanged((user) => {
   if (user) {
-    //alert("Login com sucesso: " + user.displayName);
+    alert("Login com sucesso: " + user.displayName);
     console.log(user);
     displayTasks();
+    displayNotes();
   }
 });
 
-//Chamar a função displayTasks no evento submit do formulário
+//Ao clicar no botão adiciona o registo e mostra ao utilizador
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   let tarefa = document.querySelector('[name=tarefa]').value;
@@ -301,19 +369,60 @@ form.addEventListener('submit', async (e) => {
     });
     console.log("Document written with ID: ", docRef.id);
 
-    //Limpar o conjunto de IDs exibidos para evitar duplicação após adicionar uma nova tarefa
+
     displayedTasks.clear();
     displayTasks();
   } catch (e) {
     console.error("Error adding document: ", e);
   }
-  //alert('Registado com sucesso');
+  alert('Registado com sucesso');
   form.reset();
 });
 
-// Chamar a função displayTasks no evento input do textarea notas
-const notasTextarea = document.querySelector('[name=tarefa-notes]');
-notasTextarea.addEventListener('input', async (e) => {
+
+formnotas.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  let nota = document.querySelector('[name=tarefa-notes]').value;
+  try {
+    const user = auth.currentUser;
+    const userId = user.uid;
+    const name = user.displayName
+
+    const docRef = await addDoc(collection(db, "notes"), {
+      texto: nota,
+      userId: userId,
+      userName: name
+    });
+    console.log("Document written with ID: ", docRef.id);
+
+    displayedNotes.clear();
+    displayNotes();
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+  alert('Registado com sucesso');
+  formnotas.reset();
+});
+
+//Sign-Out
+
+let signOutBtn = document.getElementById('signOut');
+
+signOutBtn.addEventListener('click', async (e) => {;
+    signOut(auth).then(() => {
+      window.location.href = "index.html";
+    }).catch((error) => {
+      alert("Aconteceu um erro")
+    });
+
+});
+
+
+
+
+// Chamar a função displayTasks no evento submit do botão notas
+/*
+formnotas.addEventListener('submit', async (e) => {
   const user = auth.currentUser;
   const userId = user.uid;
 
@@ -355,3 +464,4 @@ notasTextarea.addEventListener('input', async (e) => {
     }
   }
 });
+*/
