@@ -343,10 +343,12 @@ function displayTasks() {
       });
   }
   
+  let username = document.getElementById("username")
 //quando é feita a autenticação
 auth.onAuthStateChanged((user) => {
   if (user) {
-    alert("Login com sucesso: " + user.displayName);
+    username.innerHTML = username.innerHTML + user.displayName
+    //alert("Login com sucesso: " + user.displayName);
     console.log(user);
     displayTasks();
     displayNotes();
@@ -375,7 +377,7 @@ form.addEventListener('submit', async (e) => {
   } catch (e) {
     console.error("Error adding document: ", e);
   }
-  alert('Registado com sucesso');
+  //alert('Registado com sucesso');
   form.reset();
 });
 
@@ -400,7 +402,7 @@ formnotas.addEventListener('submit', async (e) => {
   } catch (e) {
     console.error("Error adding document: ", e);
   }
-  alert('Registado com sucesso');
+  //alert('Registado com sucesso');
   formnotas.reset();
 });
 
@@ -412,7 +414,7 @@ signOutBtn.addEventListener('click', async (e) => {;
     signOut(auth).then(() => {
       window.location.href = "index.html";
     }).catch((error) => {
-      alert("Aconteceu um erro")
+      alert("Aconteceu um erro" + error)
     });
 
 });
