@@ -11,26 +11,145 @@ textarea.addEventListener('input', () => {
   textarea.style.height = `${textarea.scrollHeight}px`;
 });
 
-//Calendário
-document.addEventListener('DOMContentLoaded', function() {
-  var calendarEl = document.getElementById('calendar');
-  var calendar = new FullCalendar.Calendar(calendarEl, {
-    selectable: true,
-    select: function(info) {
-      // Handle the selection of a date or range
-      var startDate = info.start;
-      var endDate = info.end;
+//----------------------------------------------Calendario----------------------------------------------
+document.addEventListener("DOMContentLoaded", function() {
+  const monthYearElement = document.querySelector(".month-year");
+  const daysContainer = document.querySelector(".days");
+  const prevButton = document.querySelector(".prev");
+  const nextButton = document.querySelector(".next");
 
-      // Perform any desired actions with the selected date(s)
-      // For example, send a notification or mark the selected days in some way
-      // You can use external libraries or custom code to handle notifications
+  let currentDate = new Date();
 
-      // Example: Log the selected date(s) to the console
-      console.log('Selected date(s):', startDate, endDate);
-    }
+  // Display the current month
+  displayMonth(currentDate);
+
+  // Event listeners for previous and next buttons
+  prevButton.addEventListener("click", function() {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    displayMonth(currentDate);
   });
-  calendar.render();
+
+  nextButton.addEventListener("click", function() {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    displayMonth(currentDate);
+  });
+
+  function displayMonth(date) {
+    // Clear the calendar days
+    daysContainer.innerHTML = "";
+
+    // Set the month and year in the header
+    monthYearElement.textContent = getMonthName(date) + " " + date.getFullYear();
+
+    // Get the first day of the month
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+
+    // Get the number of days in the month
+    const totalDays = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+
+    // Calculate the index of the first day in the weekdays list (0 - Sunday, 1 - Monday, etc.)
+    const firstDayIndex = firstDay.getDay();
+
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < firstDayIndex; i++) {
+      const emptyCell = document.createElement("div");
+      daysContainer.appendChild(emptyCell);
+    }
+
+    // Add the calendar days
+    for (let i = 1; i <= totalDays; i++) {
+      const dayCell = document.createElement("div");
+      dayCell.textContent = i;
+      daysContainer.appendChild(dayCell);
+
+      // Add click event listener to each day cell
+      dayCell.addEventListener("click", function() {
+        const selectedDay = document.querySelector(".selected");
+        if (selectedDay) {
+          selectedDay.classList.remove("selected");
+        }
+
+        // Mark the clicked day as selected
+        this.classList.add("selected");
+
+        // Save the selected date to the database
+        const selectedDate = new Date(date.getFullYear(), date.getMonth(), i);
+        saveSelectedDateToDatabase(selectedDate);
+      });
+
+      // Mark the current date as selected
+      if (
+        date.getFullYear() === currentDate.getFullYear() &&
+        date.getMonth() === currentDate.getMonth() &&
+        i === currentDate.getDate()
+      ) {
+        dayCell.classList.add("selected");
+      }
+    }
+  }
+
+  function getMonthName(date) {
+    const options = { month: "long" };
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+  }
+
+  async function saveSelectedDateToDatabase(selectedDate) {
+    try {
+      const user = auth.currentUser;
+      const userId = user.uid;
+      const name = user.displayName;
+  
+      // Check if the selected date already exists in the database for the current user
+      const querySnapshot = await getDocs(
+        query(collection(db, "data"), where("data", "==", selectedDate), where("userId", "==", userId))
+      );
+  
+      if (!querySnapshot.empty) {
+        // If the date exists, delete it from the database
+        querySnapshot.forEach((doc) => {
+          deleteDoc(doc.ref);
+          console.log("Document deleted with ID: ", doc.id);
+        });
+  
+        // Perform any additional logic or UI updates after deletion
+        // ...
+  
+      } else {
+        // If the date doesn't exist, save it to the database
+        const docRef = await addDoc(collection(db, "data"), {
+          data: selectedDate,
+          userId: userId,
+          userName: name
+        });
+        console.log("Document written with ID: ", docRef.id);
+  
+        // Perform any additional logic or UI updates after saving
+        // ...
+      }
+    } catch (e) {
+      console.error("Error accessing database: ", e);
+    }
+  }
 });
+
+
+  // Add event listeners to previous and next buttons
+  const prevButton = document.querySelector(".prev");
+  const nextButton = document.querySelector(".next");
+
+  prevButton.addEventListener("click", () => {
+    // Handle the click action for the previous button
+    // For example, you can navigate to the previous month
+    //alert("Previous button clicked");
+  });
+
+  nextButton.addEventListener("click", () => {
+    // Handle the click action for the next button
+    // For example, you can navigate to the next month
+    //alert("Next button clicked");
+  });
+
+//-------------------------------------------------------------------------------------
 
 //Your web app's Firebase configuration
 const firebaseConfig = {

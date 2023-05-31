@@ -9,16 +9,53 @@ body {
 }
 
 
-.calendar-container {
+.calendar {
+    width: 300px;
     background-color: #ffffff;
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    text-align: center;
-    margin-top: 20px; 
-    margin-right: 20px;
+    font-family: Hind, sans-serif;
     margin-left: 20px;
-    flex-grow: 1;
+    margin-top: 20px;
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .weekdays {
+    display: flex;
+  }
+  
+  .weekdays div {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+  }
+  
+  .days div {
+    text-align: center;
+    padding: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+  
+  .days div:hover {
+    background-color: #f2f2f2;
+  }
+  
+  .days .selected {
+    background-color: #ccc;
+    font-weight: bold;
   }
 
 
