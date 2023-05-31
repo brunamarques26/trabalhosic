@@ -227,7 +227,7 @@ input[type="submit"] {
     text-align: left;
 }
 
-.list-notes li label {
+ .list-notes li label, .list-data li label{
     padding-left: 30px;
 }
 

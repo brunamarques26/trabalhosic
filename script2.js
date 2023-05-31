@@ -438,15 +438,18 @@ auth.onAuthStateChanged((user) => {
     displayCalen();
 
     const photoURL = user.photoURL;
+    const profilePhoto = document.getElementById("profile-photo");
 
     if (photoURL) {
       console.log("URL da foto de perfil:", photoURL);
   
       // Use a URL da foto de perfil para definir o atributo 'src' da imagem
-      const profilePhoto = document.getElementById("profile-photo");
+      
       profilePhoto.src = photoURL;
       profilePhoto.alt = "Foto de Perfil";
       profilePhoto.style.width = "30px";
+    } else{
+      profilePhoto.style.display = "none"
     }
   }
 });
