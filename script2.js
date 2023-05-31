@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function() {
         this.classList.add("selected");
 
         // Save the selected date to the database
-        const selectedDate = new Date(date.getFullYear(), date.getMonth(), i);
+        const selectedDate = new Date(date.getFullYear(), date.getMonth(), parseInt(this.textContent));
         saveSelectedDateToDatabase(selectedDate);
       });
 
@@ -98,10 +98,14 @@ document.addEventListener("DOMContentLoaded", function() {
       const user = auth.currentUser;
       const userId = user.uid;
       const name = user.displayName;
-  
+
+  // Transform selectedDate into a string and remove the hour part
+  const dateString = selectedDate.toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
+
+
       // Check if the selected date already exists in the database for the current user
       const querySnapshot = await getDocs(
-        query(collection(db, "data"), where("data", "==", selectedDate), where("userId", "==", userId))
+        query(collection(db, "cal"), where("date", "==", dateString), where("userId", "==", userId))
       );
   
       if (!querySnapshot.empty) {
@@ -115,21 +119,30 @@ document.addEventListener("DOMContentLoaded", function() {
         // ...
   
       } else {
-        // If the date doesn't exist, save it to the database
-        const docRef = await addDoc(collection(db, "data"), {
-          data: selectedDate,
-          userId: userId,
-          userName: name
-        });
-        console.log("Document written with ID: ", docRef.id);
+        // If the date doesn't exist, prompt the user to enter a text
+        const text = prompt("Enter text for the selected date:");
   
-        // Perform any additional logic or UI updates after saving
-        // ...
+        if (text) {
+          // If the user entered a text, save the date and text to the database
+          const docRef = await addDoc(collection(db, "cal"), {
+            date: dateString,
+            userId: userId,
+            userName: name,
+            text: text,
+          });
+          displayCalen();
+          console.log("Document written with ID: ", docRef.id);
+  
+          // Perform any additional logic or UI updates after saving
+          // ...
+        }
       }
     } catch (e) {
-      console.error("Error accessing database: ", e);
+      console.error("Error: ", e);
     }
   }
+
+  
 });
 
 
@@ -150,6 +163,76 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
 //-------------------------------------------------------------------------------------
+
+
+//-----Lista do calendario-----
+
+const listCal = document.querySelector('.list-data');
+
+const displayedCale = new Set();
+
+function displayCalen() {
+  displayedCale.clear();
+  const user = auth.currentUser;
+  const userId = user.uid;
+  const userCalRef = collection(db, "cal");
+  const calQuery = query(userCalRef, where("userId", "==", userId));
+
+  listCal.innerHTML = "";
+  listCal.style.listStyleType = "none";
+
+  onSnapshot(calQuery, (snapshot) => {
+    snapshot.forEach((doc3) => {
+      const calId = doc3.id;
+      const calData = doc3.data();
+
+      if (!displayedCale.has(calId)) {
+        const listItem = document.createElement("li");
+        listItem.classList.add("list-data");
+
+        const label = document.createElement("label");
+        label.setAttribute("for", calId);
+
+        label.innerText = calData.date + " \n " + calData.text;
+
+        const deleteButton = document.createElement("button");
+        const deleteIcon = document.createElement("span");
+        deleteIcon.classList.add("material-icons");
+        deleteIcon.textContent = "delete_forever";
+        deleteButton.classList.add("delete-button");
+        deleteButton.appendChild(deleteIcon);
+        deleteButton.addEventListener("click", () => {
+          deleteCalItem(calId);
+        });
+
+        listItem.setAttribute("data-id", calId);
+
+        listItem.appendChild(label);
+        listItem.appendChild(deleteButton);
+
+        listCal.appendChild(listItem);
+
+        displayedCale.add(calId);
+      }
+    });
+  });
+}
+
+function deleteCalItem(calId) { 
+  const dataRef = doc(db, "cal", calId);
+  deleteDoc(dataRef)
+    .then(() => {
+      console.log("Data excluída com sucesso!");
+
+      const listItem = document.querySelector(`li[data-id="${calId}"]`);
+      if (listItem) {
+        listItem.remove();
+      }
+    })
+    .catch((error) => {
+      console.error("Erro ao excluir a data: ", error);
+    });
+}
 
 //Your web app's Firebase configuration
 const firebaseConfig = {
@@ -275,8 +358,7 @@ function displayTasks() {
         console.error("Erro ao excluir o documento: ", error);
       });
   }
-  
-  
+
 
   const displayedNotes = new Set();
 
@@ -346,10 +428,11 @@ function displayTasks() {
 //quando é feita a autenticação
 auth.onAuthStateChanged((user) => {
   if (user) {
-    alert("Login com sucesso: " + user.displayName);
+    //alert("Login com sucesso: " + user.displayName);
     console.log(user);
     displayTasks();
     displayNotes();
+    displayCalen();
   }
 });
 
@@ -375,7 +458,7 @@ form.addEventListener('submit', async (e) => {
   } catch (e) {
     console.error("Error adding document: ", e);
   }
-  alert('Registado com sucesso');
+  //alert('Registado com sucesso');
   form.reset();
 });
 
@@ -400,7 +483,7 @@ formnotas.addEventListener('submit', async (e) => {
   } catch (e) {
     console.error("Error adding document: ", e);
   }
-  alert('Registado com sucesso');
+  //alert('Registado com sucesso');
   formnotas.reset();
 });
 
@@ -416,52 +499,3 @@ signOutBtn.addEventListener('click', async (e) => {;
     });
 
 });
-
-
-
-
-// Chamar a função displayTasks no evento submit do botão notas
-/*
-formnotas.addEventListener('submit', async (e) => {
-  const user = auth.currentUser;
-  const userId = user.uid;
-
-  if (userId) {
-    const notesQuery = query(collection(db, "notes"), where("userId", "==", userId));
-    const notesSnapshot = await getDocs(notesQuery);
-
-    if (notesSnapshot.empty) {
-      let tarefa_notas = e.target.value;
-      if (tarefa_notas !== "") {
-        try {
-          const name = user.displayName;
-
-          const docRef = await addDoc(collection(db, "notes"), {
-            texto: tarefa_notas,
-            userId: userId,
-            userName: name
-          });
-          console.log("Document written with ID: ", docRef.id);
-        } catch (e) {
-          console.error("Error adding document: ", e);
-        }
-      }
-    } else {
-      const notesDoc = notesSnapshot.docs[0];
-      const tarefa_notas = e.target.value;
-      try {
-        const name = user.displayName;
-
-        await setDoc(notesDoc.ref, {
-          texto: tarefa_notas,
-          userId: userId,
-          userName: name
-        }, { merge: true });
-        console.log("Document updated with ID: ", notesDoc.id);
-      } catch (e) {
-        console.error("Error updating document: ", e);
-      }
-    }
-  }
-});
-*/

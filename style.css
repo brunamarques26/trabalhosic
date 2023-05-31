@@ -58,6 +58,32 @@ body {
     font-weight: bold;
   }
 
+  .list-data li {
+    position: relative;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    text-align: left;
+}
+
+.list-data li label {
+    padding-left: 30px;
+}
+
+.delete-button{
+    position: absolute;
+    top: 5px;
+    left: 5px; 
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 24px;
+    color: #888888;
+}
+
 
 .todo-container {
     background-color: #ffffff;
