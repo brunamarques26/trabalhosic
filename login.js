@@ -27,16 +27,17 @@ const db = getFirestore(app);
 
 const signInButton = document.getElementById('signInButton');
 
+//Event Listener para o botão de "Sign Up with Google"
 signInButton.addEventListener('click', () => {
+    //Pop-Up da Google
     signInWithPopup(auth, provider)
         .then((result) => {
-            // Código a ser executado quando o usuário fizer login com sucesso
+            //Código que deve ser executado quando o utilizador fizer login com sucesso
             const credential = GoogleAuthProvider.credentialFromResult(result);
             const token = credential.accessToken;
             const user = result.user;
-            // IdP data available using getAdditionalUserInfo(result)
-            // ...
 
+            //Redirecionamento para a Home Page
             window.location.href = "home.html";
         })
         .catch((error) => {
@@ -45,7 +46,6 @@ signInButton.addEventListener('click', () => {
             const errorMessage = error.message;
             const email = error.customData.email;
             const credential = GoogleAuthProvider.credentialFromError(error);
-            // ...
         });
 });
 

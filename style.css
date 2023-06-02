@@ -6,7 +6,7 @@ body {
     font-family: Hind, sans-serif;
     margin: 0;
     padding: 0;
-    margin-top: 5%;
+    margin-top: 4%;
 }
 
 .calendar {
@@ -89,7 +89,7 @@ body {
     text-align: center;
     margin-right: 20px;
     flex-grow: 1;
-    max-width: 40%;
+    max-width: 30%;
 }
 
 .notes-input {
@@ -111,7 +111,7 @@ h2 {
 }
 
 .submit-btn {
-    background-color: #f3722c;
+    background-color: #4d908e;
     border: none;
     border-radius: 4px;
     color: #ffffff;
@@ -124,7 +124,7 @@ h2 {
 }
 
 .submit-btn:hover {
-    background-color: #f3722c;
+    background-color: #3c716f;
 }
 
 form {
@@ -142,7 +142,7 @@ form {
 }
 
 input[type="submit"] {
-    background-color: #f3722c;
+    background-color: #4d908e;
     color: white;
     border: none;
     padding: 12px 24px;
@@ -177,8 +177,8 @@ input[type="submit"] {
 }
 
 .list-item input[type="checkbox"]:checked {
-    background-color: #f3722c;
-    border-color: #f3722c;
+    background-color: #4d908e;
+    border-color: #4d908e;
 }
 
 .list-item label {
@@ -257,7 +257,7 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    background-color: #f3722c;
+    background-color: #4d908e;
     padding: 10px;
     color: white;
     z-index: 9999; /* Para garantir que a header fique acima do conteúdo */
@@ -278,7 +278,7 @@ header {
 }
 
 #signOut {
-    background-color: #f3722c;
+    background-color: #4d908e;
     border: none;
     border-radius: 4px;
     color: #ffffff;
@@ -292,14 +292,14 @@ header {
 }
 
 #signOut:hover {
-    background-color: #d76527;
+    background-color: #3c716f;
 }
 
 button {
     padding: 5px 10px;
     border: none;
     background-color: transparent;
-    color: #f3722c;
+    color: #4d908e;
     cursor: pointer;
     font-size: 16px;
 }
