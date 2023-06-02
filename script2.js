@@ -20,10 +20,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
   let currentDate = new Date();
 
-  // Display the current month
   displayMonth(currentDate);
 
-  // Event listeners for previous and next buttons
   prevButton.addEventListener("click", function() {
     currentDate.setMonth(currentDate.getMonth() - 1);
     displayMonth(currentDate);
@@ -35,49 +33,38 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   function displayMonth(date) {
-    // Clear the calendar days
     daysContainer.innerHTML = "";
 
-    // Set the month and year in the header
     monthYearElement.textContent = getMonthName(date) + " " + date.getFullYear();
 
-    // Get the first day of the month
     const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
 
-    // Get the number of days in the month
     const totalDays = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
 
-    // Calculate the index of the first day in the weekdays list (0 - Sunday, 1 - Monday, etc.)
     const firstDayIndex = firstDay.getDay();
 
-    // Add empty cells for days before the first day of the month
     for (let i = 0; i < firstDayIndex; i++) {
       const emptyCell = document.createElement("div");
       daysContainer.appendChild(emptyCell);
     }
 
-    // Add the calendar days
     for (let i = 1; i <= totalDays; i++) {
       const dayCell = document.createElement("div");
       dayCell.textContent = i;
       daysContainer.appendChild(dayCell);
 
-      // Add click event listener to each day cell
       dayCell.addEventListener("click", function() {
         const selectedDay = document.querySelector(".selected");
         if (selectedDay) {
           selectedDay.classList.remove("selected");
         }
 
-        // Mark the clicked day as selected
         this.classList.add("selected");
 
-        // Save the selected date to the database
         const selectedDate = new Date(date.getFullYear(), date.getMonth(), parseInt(this.textContent));
         saveSelectedDateToDatabase(selectedDate);
       });
 
-      // Mark the current date as selected
       if (
         date.getFullYear() === currentDate.getFullYear() &&
         date.getMonth() === currentDate.getMonth() &&
@@ -99,31 +86,26 @@ document.addEventListener("DOMContentLoaded", function() {
       const userId = user.uid;
       const name = user.displayName;
 
-  // Transform selectedDate into a string and remove the hour part
   const dateString = selectedDate.toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
 
 
-      // Check if the selected date already exists in the database for the current user
       const querySnapshot = await getDocs(
         query(collection(db, "cal"), where("date", "==", dateString), where("userId", "==", userId))
       );
   
       if (!querySnapshot.empty) {
-        // If the date exists, delete it from the database
         querySnapshot.forEach((doc) => {
           deleteDoc(doc.ref);
           console.log("Document deleted with ID: ", doc.id);
         });
   
-        // Perform any additional logic or UI updates after deletion
-        // ...
+
   
       } else {
-        // If the date doesn't exist, prompt the user to enter a text
         const text = prompt("Insira o texto para a data selecionada:");
   
         if (text) {
-          // If the user entered a text, save the date and text to the database
+          //Guarda a data que o utilizador escolhe e o texto
           const docRef = await addDoc(collection(db, "cal"), {
             date: dateString,
             userId: userId,
@@ -132,9 +114,6 @@ document.addEventListener("DOMContentLoaded", function() {
           });
           displayCalen();
           console.log("Document written with ID: ", docRef.id);
-  
-          // Perform any additional logic or UI updates after saving
-          // ...
         }
       }
     } catch (e) {
@@ -144,23 +123,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
   
 });
-
-
-  // Add event listeners to previous and next buttons
-  const prevButton = document.querySelector(".prev");
-  const nextButton = document.querySelector(".next");
-
-  prevButton.addEventListener("click", () => {
-    // Handle the click action for the previous button
-    // For example, you can navigate to the previous month
-    //alert("Previous button clicked");
-  });
-
-  nextButton.addEventListener("click", () => {
-    // Handle the click action for the next button
-    // For example, you can navigate to the next month
-    //alert("Next button clicked");
-  });
 
 //-------------------------------------------------------------------------------------
 
@@ -348,7 +310,7 @@ function displayTasks() {
       .then(() => {
         console.log("Documento excluído com sucesso!");
   
-        //Encontra o elemento pelo atributo data-task-id e removev da lista
+        //Encontra o elemento pelo atributo data-task-id e remove da lista
         const listItem = document.querySelector(`li[data-task-id="${taskId}"]`);
         if (listItem) {
           listItem.remove();
@@ -366,10 +328,12 @@ function displayTasks() {
     const user = auth.currentUser;
     const userId = user.uid;
     const userNoteRef = collection(db, "notes");
-    const notesQuery = query(userNoteRef, where("userId", "==", userId));
+    
   
     listNotes.innerHTML = "";
     listNotes.style.listStyleType = "none"; 
+
+    const notesQuery = query(userNoteRef, where("userId", "==", userId));
   
     onSnapshot(notesQuery, (snapshot) => {
       snapshot.forEach((doc2) => {
@@ -427,10 +391,9 @@ function displayTasks() {
 
   let username = document.getElementById("username")
   
-//quando é feita a autenticação
+//Autenticação feita
 auth.onAuthStateChanged((user) => {
   if (user) {
-    //alert("Login com sucesso: " + user.displayName);
     username.innerHTML = user.displayName
     console.log(user);
     displayTasks();
@@ -440,11 +403,7 @@ auth.onAuthStateChanged((user) => {
     const photoURL = user.photoURL;
     const profilePhoto = document.getElementById("profile-photo");
 
-    if (photoURL) {
-      console.log("URL da foto de perfil:", photoURL);
-  
-      // Use a URL da foto de perfil para definir o atributo 'src' da imagem
-      
+    if (photoURL) {  
       profilePhoto.src = photoURL;
       profilePhoto.alt = "Foto de Perfil";
       profilePhoto.style.width = "30px";
@@ -476,7 +435,6 @@ form.addEventListener('submit', async (e) => {
   } catch (e) {
     console.error("Error adding document: ", e);
   }
-  //alert('Registado com sucesso');
   form.reset();
 });
 
@@ -501,19 +459,17 @@ formnotas.addEventListener('submit', async (e) => {
   } catch (e) {
     console.error("Error adding document: ", e);
   }
-  //alert('Registado com sucesso');
   formnotas.reset();
 });
 
 //Sign-Out
-
 let signOutBtn = document.getElementById('signOut');
 
+//Event Listener para o botão de Sign Out
 signOutBtn.addEventListener('click', async (e) => {;
     signOut(auth).then(() => {
       window.location.href = "index.html";
     }).catch((error) => {
       alert("Aconteceu um erro")
     });
-
 });
